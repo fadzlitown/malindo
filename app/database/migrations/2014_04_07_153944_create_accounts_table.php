@@ -24,6 +24,7 @@ class CreateAccountsTable extends Migration
             $table->integer('plan_id')->unsigned();
             $table->smallinteger('confirmed')->unsigned();
             $table->string('confirmation', 32);
+            $table->string('remember_token', 100)->nullable();
             $table->timestamps();
 
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('restrict')->onUpdate('cascade');
