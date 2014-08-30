@@ -31,14 +31,14 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
 
     Route::get('login', 'HomeController@getLogin');
     Route::post('login/submit', 'HomeController@postLogin');
-//
-//    Route::get('register', 'HomeController@getRegister');
-//    Route::post('register/submit', 'HomeController@postRegister');
-//
-//    Route::get('forgot', 'HomeController@getForgotPassword');
-//    Route::post('forgot/submit', 'HomeController@postForgotPassword');
-//
-//    Route::get('reset/{token}', 'HomeController@getReset');
-//    Route::post('reset/submit', 'HomeController@postReset');
+
+    Route::get('register', 'HomeController@getRegister');
+    Route::post('register/submit', 'HomeController@postRegister');
+
+    Route::get('forgot', 'HomeController@getForgotPassword');
+    Route::post('forgot/submit', 'HomeController@postForgotPassword');
+
+    Route::get('reset/{token}', 'HomeController@getReset');
+    Route::post('reset/submit', 'HomeController@postReset');
 });
 
