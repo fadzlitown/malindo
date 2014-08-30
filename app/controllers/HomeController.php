@@ -28,6 +28,34 @@ class HomeController extends BaseController
      */
     public function getHome()
     {
+        $category = new \App\Models\Category();
+        $brands   = $category->find(1)->brands()->lists("brand_id", "id");
+
+        $brand  = new \App\Models\Brand();
+        $models = $brand->find(1)->models()->lists("model_id", "id");
+
+        $feature_category           = new \App\Models\FeatureCategory();
+        $feature_category_instances = $feature_category->find(1)->instances()->lists("name", "id");
+
+        $feature_category_instance       = new \App\Models\FeatureCategoryInstance();
+        $feature_category_instance_metas = $feature_category_instance->find(1)->metas()->lists("value", "id");
+
+
+        echo '<pre>';
+        print_r($brands);
+        echo "<br/>----<br/>";
+        print_r($models);
+        echo "<br/>----<br/>";
+        print_r($feature_category_instances);
+        echo "<br/>----<br/>";
+        print_r($feature_category_instance_metas);
+        echo "<br/>----<br/>";
+        print_r(\DB::getQueryLog());
+        echo "<br/>----<br/>";
+        echo '</pre>';
+        die;
+
+
         return View::make('hello');
     }
 
@@ -122,12 +150,13 @@ class HomeController extends BaseController
         if ($validator->passes()) {
             $account = new Account;
 
-            $account->name              = $input['name'];
-            $account->email             = $input['email'];
-            $account->password          = Hash::make($input['password']);
-            $account->plan_id           = 1;
-            $account->confirmed         = 1;
-            $account->confirmation_code = md5(microtime() . Config::get('app.key'));
+            $account->first_name   = $input['name'];
+            $account->last_name    = $input['name'];
+            $account->email        = $input['email'];
+            $account->password     = Hash::make($input['password']);
+            $account->plan_id      = 1;
+            $account->confirmed    = 1;
+            $account->confirmation = md5(microtime() . Config::get('app.key'));
 
             $account->save();
             return Redirect::to('login')->with('flash_message', "You have sucessfully registered. Please login.");
