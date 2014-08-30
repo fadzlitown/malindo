@@ -3,7 +3,7 @@
 #!! ERROR: netbea is undefined. Use list command to see defined gitignore types !!#
 
 ### NetBeans ###
-nbproject/
+nbproject 
 nbproject/private/
 build/
 nbbuild/
@@ -35,6 +35,15 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+### Laravel ###
+/bootstrap/compiled.php
+/vendor
+.env.local.php
+.env.php
+composer.phar
+composer.lock
 
 
 ### Laravel4 ###
