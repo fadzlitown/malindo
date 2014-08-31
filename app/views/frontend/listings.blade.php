@@ -1,0 +1,1 @@
+/home/vagrant/projects/phone-marketplace/app/views/listings.blade.php

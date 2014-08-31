@@ -35,10 +35,13 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
     Route::get('register', 'HomeController@getRegister');
     Route::post('register/submit', 'HomeController@postRegister');
 
-    Route::get('forgot', 'HomeController@getForgotPassword');
-    Route::post('forgot/submit', 'HomeController@postForgotPassword');
+//    Route::get('forgot', 'HomeController@getForgotPassword');
+//    Route::post('forgot/submit', 'HomeController@postForgotPassword');
+//
+//    Route::get('reset/{token}', 'HomeController@getReset');
+//    Route::post('reset/submit', 'HomeController@postReset');
 
-    Route::get('reset/{token}', 'HomeController@getReset');
-    Route::post('reset/submit', 'HomeController@postReset');
+    Route::get('category/{id}', 'CategoryController@getBrands');
 });
+
 
