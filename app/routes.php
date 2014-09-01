@@ -42,6 +42,8 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
 //    Route::post('reset/submit', 'HomeController@postReset');
 
     Route::get('category/{id}', 'CategoryController@getBrands');
+    
+    Route::get('specs/{numeric}', 'FeatureController@getSpecs');
 });
 
 

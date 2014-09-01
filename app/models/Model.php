@@ -13,4 +13,9 @@ class Model extends \Eloquent
         return $this->hasMany("App\Models\Post");
     }
 
+    public function features()
+    {
+        return $this->hasMany("App\Models\ModelFeature");
+    }
+
 }

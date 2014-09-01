@@ -12,5 +12,10 @@ class FeatureCategoryInstance extends \Eloquent
     {
         return $this->hasMany("App\Models\FeatureCategoryInstanceMeta", "fci_id");
     }
+    
+    public function feature()
+    {
+        return $this->hasOne("App\Models\FeatureCategory", "id");
+    }
 
 }
