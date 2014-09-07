@@ -8,7 +8,7 @@ class Brand extends \Eloquent
     protected $table    = 'brands';
     protected $fillable = ['name'];
 
-    public function models()
+    public function brandModels()
     {
         return $this->hasMany("App\Models\BrandModel");
     }

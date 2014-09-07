@@ -26,6 +26,10 @@ Route::pattern('dt_end', '^([0-9]{4})-([0-9]{2})-([0-9]{2})$');
 Route::pattern('numeric', '[0-9]+');
 
 Route::group(array('namespace' => 'App\Controllers'), function() {
+
+    /**
+     * HomeController
+     */
     Route::get('/', 'HomeController@getHome');
     Route::get('home', 'HomeController@getHome');
 
@@ -41,9 +45,44 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
 //    Route::get('reset/{token}', 'HomeController@getReset');
 //    Route::post('reset/submit', 'HomeController@postReset');
 
-    Route::get('category/{id}', 'CategoryController@getBrands');
-    
-    Route::get('specs/{numeric}', 'FeatureController@getSpecs');
+    /**
+     * List of categories
+     * List of brands by category
+     * 
+     * CategoryController
+     */
+    Route::get('categories', 'CategoryController@index');
+    Route::get('category/{name}', 'CategoryController@getBrands');
+    Route::get('category/{name}/brands', 'CategoryController@getBrands');
+
+    /**
+     * List of brands
+     * List of models by brand
+     * 
+     * 
+     * BrandController
+     */
+    Route::get('brands', 'BrandController@index');
+    Route::get('brand/{name}', 'BrandController@getModels');
+    Route::get('brand/{name}/models', 'BrandController@getModels');
+
+    /**
+     * Specification of model
+     * 
+     * FeatureController
+     */
+    Route::get('model/{name}/specs', 'FeatureController@getSpecs');
+
+
+    /**
+     * List of all listings
+     * 
+     * Detail of listing
+     * Review of listing
+     * 
+     * PostController
+     */
+    Route::get('listing/{name}/detail', 'PostController@getDetail');
 });
 
 

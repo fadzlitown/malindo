@@ -29,10 +29,16 @@ class HomeController extends BaseController
     public function getHome()
     {
         $category = new \App\Models\Category();
-        $brands   = $category->find(1)->brands()->lists("brand_id", "id");
 
-        $brand  = new \App\Models\Brand();
-        $models = $brand->find(1)->models()->lists("model_id", "id");
+        $category_brands = $category->find(2)->categoryBrand()->get();
+        $brands          = [];
+
+        foreach ($category_brands as $category_brand) {
+            $brand = $category_brand->brand()->get()->first()->toArray();
+            array_push($brands, $brand);
+        }
+
+        $models = \App\Models\Brand::find(1)->brandModels()->lists("model_id", "id");
 
         $feature_category           = new \App\Models\FeatureCategory();
         $feature_category_instances = $feature_category->find(1)->instances()->lists("name", "id");

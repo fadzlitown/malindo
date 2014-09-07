@@ -3,7 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\Brand,
-    App\Models\Category;
+    App\Models\Category,
+    Redirect;
 
 /**
  * Author       : Rifki Yandhi
@@ -20,35 +21,55 @@ class CategoryController extends \BaseController
         parent::__construct();
     }
 
-    public function getBrands($category_id = null)
+    public function index()
     {
-        if (is_null($category_id))
+        //list all categories
+        $categories = Category::all()->toArray();
+
+        echo '<pre>';
+        print_r($categories);
+        echo "<br/>----<br/>";
+        echo '</pre>';
+        die;
+    }
+
+    public function getBrands($slug = null)
+    {
+        if (is_null($slug))
             return Redirect::to("/");
 
-        $category = new Category();
-        $brand    = new Brand();
-        $brands   = [];
-        $models   = [];
+        $category = Category::where("slug", $slug)->get()->first();
 
-        $category_brands = $category->find($category_id)->categoryBrand()->get();
-        foreach ($category_brands as $category_brand) {
-            $brands = array_add($brands, $category_brand->brand->id, array_merge(["parent_category_id" => $category_brand->category_id], $category_brand->brand->toArray()));
-        }
+        if (!is_null($category)) {
 
-        $category_brand_list = $category_brands->lists("brand_id", "id");
-        foreach ($category_brand_list as $brand_id) {
-            $brand_models = $brand->find($brand_id)->models()->get();
-            if ($brand_models) {
-                foreach ($brand_models as $brand_model) {
-                    $models = array_add($models, $brand_model->model_id, array_merge(["parent_brand_id" => $brand_model->brand_id], $brand_model->model->toArray()));
+            $category_model = new Category();
+            $brand_model    = new Brand();
+            $brands         = [];
+            $models         = [];
+
+            $category_brands = $category_model->find($category->id)->categoryBrand()->get();
+            foreach ($category_brands as $category_brand) {
+                $brands = array_add($brands, $category_brand->brand->id, array_merge(["parent_category_id" => $category_brand->category_id], $category_brand->brand->toArray()));
+            }
+
+            $category_brand_list = $category_brands->lists("brand_id", "id");
+            foreach ($category_brand_list as $brand_id) {
+                $brand_models = $brand_model->find($brand_id)->brandModels()->get();
+                if ($brand_models) {
+                    foreach ($brand_models as $obj) {
+                        $models = array_add($models, $obj->model_id, array_merge(["parent_brand_id" => $obj->brand_id], $obj->model->toArray()));
+                    }
                 }
             }
-        }
 
-        $output = [
-            'brands' => $brands,
-            'models' => $models
-        ];
+            $output = [
+                'brands' => $brands,
+                'models' => $models
+            ];
+        }
+        else
+            return Redirect::to("/");
+
 
         echo '<pre>';
         print_r($output);
