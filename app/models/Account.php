@@ -27,4 +27,9 @@ class Account extends \Eloquent implements UserInterface, RemindableInterface
      */
     protected $hidden = array('password', 'remember_token');
 
+    public function posts()
+    {
+        return $this->hasMany("App\Models\Post");
+    }
+
 }

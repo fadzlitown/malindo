@@ -15,6 +15,7 @@ class AddToPostsTable extends Migration
     {
         Schema::table('posts', function(Blueprint $table) {
             $table->string('slug', 170);
+            $table->string('code', 10);
         });
     }
 

@@ -17,7 +17,7 @@
   |--------------------------------------------------------------------------
  */
 Route::pattern('token', '[A-Za-z0-9]+');
-Route::pattern('type', '[A-Za-z0-9_]+');
+Route::pattern('slug', '[A-Za-z0-9_]+');
 Route::pattern('bar_type', '[A-Za-z0-9]+');
 Route::pattern('date_unit', '[A-Za-z0-9]+');
 Route::pattern('selected_comparison', '[A-Za-z0-9]+');
@@ -52,8 +52,8 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
      * CategoryController
      */
     Route::get('categories', 'CategoryController@index');
-    Route::get('category/{name}', 'CategoryController@getBrands');
-    Route::get('category/{name}/brands', 'CategoryController@getBrands');
+    Route::get('category/{slug}', 'CategoryController@getBrands');
+    Route::get('category/{slug}/brands', 'CategoryController@getBrands');
 
     /**
      * List of brands
@@ -63,15 +63,15 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
      * BrandController
      */
     Route::get('brands', 'BrandController@index');
-    Route::get('brand/{name}', 'BrandController@getModels');
-    Route::get('brand/{name}/models', 'BrandController@getModels');
+    Route::get('brand/{slug}', 'BrandController@getModels');
+    Route::get('brand/{slug}/models', 'BrandController@getModels');
 
     /**
      * Specification of model
      * 
      * FeatureController
      */
-    Route::get('model/{name}/specs', 'FeatureController@getSpecs');
+    Route::get('model/{slug}/specs', 'FeatureController@getSpecs');
 
 
     /**
