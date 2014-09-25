@@ -78,7 +78,7 @@ return array(
 	|
 	*/
 
-	'key' => 'kSAZggHcgmkR253ViSGk2SlKKPbGR3gn',
+	'key' => '3VqxQzG64PcNdc9lCHvbHO1H31Ky2FDW',
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 
@@ -189,6 +189,7 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
+                'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
 	),
 

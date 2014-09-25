@@ -13,7 +13,7 @@ use App\Models\Brand,
  * Copyright    : rifkiyandhi@gmail.com
  * Function     : 
  */
-class CategoryController extends \BaseController
+class CategoriesController extends \BaseController
 {
 
     function __construct()

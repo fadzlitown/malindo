@@ -16,11 +16,10 @@
   | Routes Pattern
   |--------------------------------------------------------------------------
  */
-Route::pattern('token', '[A-Za-z0-9]+');
+Route::pattern('code', '[A-Za-z0-9]+');
 Route::pattern('slug', '[A-Za-z0-9_]+');
 Route::pattern('bar_type', '[A-Za-z0-9]+');
 Route::pattern('date_unit', '[A-Za-z0-9]+');
-Route::pattern('selected_comparison', '[A-Za-z0-9]+');
 Route::pattern('dt_start', '^([0-9]{4})-([0-9]{2})-([0-9]{2})$');
 Route::pattern('dt_end', '^([0-9]{4})-([0-9]{2})-([0-9]{2})$');
 Route::pattern('numeric', '[0-9]+');
@@ -51,9 +50,9 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
      * 
      * CategoryController
      */
-    Route::get('categories', 'CategoryController@index');
-    Route::get('category/{slug}', 'CategoryController@getBrands');
-    Route::get('category/{slug}/brands', 'CategoryController@getBrands');
+    Route::get('categories', 'CategoriesController@index');
+    Route::get('category/{slug}', 'CategoriesController@getBrands');
+    Route::get('category/{slug}/brands', 'CategoriesController@getBrands');
 
     /**
      * List of brands
@@ -62,16 +61,16 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
      * 
      * BrandController
      */
-    Route::get('brands', 'BrandController@index');
-    Route::get('brand/{slug}', 'BrandController@getModels');
-    Route::get('brand/{slug}/models', 'BrandController@getModels');
+    Route::get('brands', 'BrandsController@index');
+    Route::get('brand/{slug}', 'BrandsController@getModels');
+    Route::get('brand/{slug}/models', 'BrandsController@getModels');
 
     /**
      * Specification of model
      * 
      * FeatureController
      */
-    Route::get('model/{slug}/specs', 'FeatureController@getSpecs');
+    Route::get('model/{slug}/specs', 'FeaturesController@getSpecs');
 
 
     /**
@@ -82,7 +81,39 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
      * 
      * PostController
      */
-    Route::get('listing/{name}/detail', 'PostController@getDetail');
+    Route::get('listing/{name}/detail', 'PostsController@getDetail');
+});
+
+Route::group(array('before' => 'auth', 'namespace' => 'App\Controllers\User'), function() {
+    #Dashboard
+    Route::get('dashboard', array('as' => 'dashboard', 'uses' => 'PanelController@index'));
+
+    #Update Profile
+    Route::get('user/profile', 'UsersController@getProfile');
+    Route::post('user/profile/submit', 'UsersController@postProfile');
+    Route::get('user/profile', array('as' => 'profile', 'uses' => 'UsersController@getProfile'));
+
+    #Update Password
+    Route::get('user/password', 'UsersController@getPassword');
+    Route::post('user/password/submit', 'UsersController@postPassword');
+    Route::get('user/password', array('as' => 'password', 'uses' => 'UsersController@getPassword'));
+
+    #Create new post listing (Detail and description)
+    Route::get('listing/create', 'PostsController@getCreate');
+
+    #Submit new post listing
+    Route::post("listing/submit", "PostsController@submitCreate");
+    #Update media of listing post
+    #Update post listing detail and description
+    Route::get('listing/{name}/edit', 'PostsController@getCreate');
+
+    #after create detail and description, popup modal to ask them to upload the image together with Generic Number
+    Route::get('listing/{code}/photo', 'PostsController@getMedia');
+    Route::post('listing/photo/submit', 'PostsController@submitMedia');
 });
 
 
+Route::group(array('prefix' => 'api/v1', 'namespace' => 'App\Controllers\Api'), function() {
+    Route::resource('todos', 'TodosController');
+    Route::resource('auth', 'AuthController', array('only' => array('index')));
+});

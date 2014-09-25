@@ -25,9 +25,10 @@ class DatabaseSeeder extends Seeder
 //        $this->call('CategorySeeder');
 //        $this->call('BrandSeeder');
 //        $this->call('ModelSeeder');
-        $this->call('FeatureCategorySeeder');
-        $this->call('FeatureCategoryInstanceSeeder');
-        $this->call('FeatureCategoryInstanceMetaSeeder');
+//        $this->call('FeatureCategorySeeder');
+//        $this->call('FeatureCategoryInstanceSeeder');
+//        $this->call('FeatureCategoryInstanceMetaSeeder');
+        $this->call('TodoSeeder');
     }
 
 }
@@ -197,6 +198,29 @@ class FeatureCategoryInstanceMetaSeeder extends Seeder
                 'key'    => $faker->word,
                 'value'  => $faker->word,
                 'fci_id' => rand(1, 50)
+            ]);
+        }
+    }
+
+}
+
+class TodoSeeder extends Seeder
+{
+
+    function run()
+    {
+        DB::table("todos")->delete();
+
+
+        $faker = Faker::create();
+        foreach (range(1, 100) as $index) {
+            \App\Models\Todo::create([
+                'id'            => $index,
+                'title'         => $faker->word,
+                'note'          => $faker->address,
+                'account_id'    => rand(1, 5),
+                'due_date'      => $faker->dateTimeThisYear,
+                'reminder_date' => $faker->dateTimeThisMonth
             ]);
         }
     }

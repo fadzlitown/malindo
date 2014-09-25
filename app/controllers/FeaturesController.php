@@ -13,7 +13,7 @@ use App\Models\FeatureCategoryInstance,
  * Copyright    : rifkiyandhi@gmail.com
  * Function     : 
  */
-class FeatureController extends \BaseController
+class FeaturesController extends \BaseController
 {
 
     function __construct()

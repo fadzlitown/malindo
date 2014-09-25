@@ -11,7 +11,7 @@ use App\Models\Brand;
  * Copyright    : rifkiyandhi@gmail.com
  * Function     : 
  */
-class BrandController extends \BaseController
+class BrandsController extends \BaseController
 {
 
     function __construct()

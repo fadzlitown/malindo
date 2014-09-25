@@ -4,8 +4,15 @@ namespace App\Controllers;
 
 use App\Models\Account,
     App\Models\Post,
+    BaseController,
+    Carbon\Carbon,
+    DB,
+    Input,
     Redirect,
-    URL;
+    Response,
+    Str,
+    URL,
+    Validator;
 
 /**
  * Author       : Rifki Yandhi
@@ -14,7 +21,7 @@ use App\Models\Account,
  * Copyright    : rifkiyandhi@gmail.com
  * Function     : 
  */
-class PostController extends \BaseController
+class PostsController extends BaseController
 {
 
     function __construct()
@@ -49,7 +56,7 @@ class PostController extends \BaseController
             ];
         }
 
-        $queries = \DB::getQueryLog();
+        $queries = DB::getQueryLog();
         echo '<pre>';
         print_r($output);
         echo "<br/>----<br/>";
@@ -60,7 +67,6 @@ class PostController extends \BaseController
         echo '</pre>';
         die;
     }
-
 }
 
 /* End of file PostController.php */

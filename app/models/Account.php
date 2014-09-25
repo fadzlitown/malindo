@@ -32,4 +32,9 @@ class Account extends \Eloquent implements UserInterface, RemindableInterface
         return $this->hasMany("App\Models\Post");
     }
 
+    public function todos()
+    {
+        return $this->hasMany("App\Models\Todo");
+    }
+
 }

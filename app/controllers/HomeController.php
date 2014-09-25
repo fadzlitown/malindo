@@ -103,6 +103,8 @@ class HomeController extends BaseController
         $flash_error = '';
         if ($validator->passes()) {
             $account_id = Account::where("email", $input['email'])->get(array('id'))->first();
+            $queries    = \DB::getQueryLog();
+          
             if (isset($account_id)) {
                 if (Auth::attempt(array('email' => $input['email'], 'password' => $input['password']), ($input['remember']))) {
                     return Redirect::to('dashboard');

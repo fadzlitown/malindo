@@ -7,15 +7,22 @@
  * Copyright    : rifkiyandhi@gmail.com
  * Function     : 
  */
-
-namespace App\Controllers;
-
-class Userbasecontroller extends \BaseController
+class UserBaseController extends \BaseController
 {
+
+    protected $user = null;
 
     function __construct()
     {
         parent::__construct();
+
+        if (is_null($this->user)) {
+            if (\Auth::user()) {
+                $this->user = \Auth::user();
+
+                \View::share(array("fullname" => ucwords($this->user->first_name . ' ' . $this->user->last_name)));
+            }
+        }
     }
 
 }
