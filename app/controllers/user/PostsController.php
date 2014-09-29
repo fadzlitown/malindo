@@ -2,7 +2,8 @@
 
 namespace App\Controllers\User;
 
-use App\Models\Post,
+use App\Malindo\Repositories\PostRepository,
+    App\Models\Post,
     App\Models\PostImage,
     Carbon\Carbon,
     Config,
@@ -14,6 +15,25 @@ use App\Models\Post,
 
 class PostsController extends UserBaseController
 {
+
+    private $repository;
+
+    public function __construct(PostRepository $repository)
+    {
+        parent::__construct();
+        $this->repository = $repository;
+    }
+
+    public function index()
+    {
+        $posts = \App\Models\Account::find(\Auth::user()->id)->posts();
+
+        $output = [
+            'posts' => $posts->get()->toArray()
+        ];
+
+        return Response::json($output);
+    }
 
     public function getCreate()
     {
@@ -34,12 +54,8 @@ class PostsController extends UserBaseController
             return Response::json($validator->messages()->first());
         }
         else {
-            $input = array_add($input, 'code', Str::random(6));
-            $input = array_add($input, 'slug', Str::slug($input['headline'] . ' ' . $input['code']));
-            $input = array_add($input, 'post_expiry_timestamp', strtotime($input['post_expiry_time']));
-            unset($input['post_expiry_time']);
-
-            $post = Post::create($input);
+            $input = $this->repository->prepareInput($input); //add slug, code
+            $post  = Post::create($input);
             if ($post->id) {
                 return Response::json($post);
             }
@@ -94,6 +110,44 @@ class PostsController extends UserBaseController
         }
         else {
             echo $validator->messages()->first();
+        }
+    }
+
+    public function getEdit($code)
+    {
+        $post = $this->repository->isPostExistsByCodeOfUser($code);
+        if ($post) {
+            echo '<pre>';
+            print_r($post->toArray());
+            echo "<br/>----<br/>";
+            echo '</pre>';
+            die;
+        }
+    }
+
+    public function submitEdit($code)
+    {
+        $post = $this->repository->isPostExistsByCodeOfUser($code);
+        echo '<pre>';
+        print_r($post->toArray());
+        echo "<br/>----<br/>";
+        echo '</pre>';
+        die;
+
+        if ($post) {
+            $input = \Input::all();
+
+            $dt_created = new Carbon($post->created_at);
+
+            $rules = array_merge($post->rules, [
+                'post_expiry_time' => 'required|after:' . $dt_created->toDateString() . '|before:' . $dt_created->addDays(31)->toDateString(),
+            ]);
+
+            $validator = Validator::make($input, $rules);
+
+            if ($validator->passes()) {
+                $post = $this->repository->setPostAsPending($post);
+            }
         }
     }
 

@@ -66,4 +66,9 @@ class ApiBaseController extends \Controller
         return $response;
     }
 
+    public function missingMethod($parameters = array())
+    {
+        return Response::json(['error' => true, 'message' => 'does not exists', 'data' => ['params' => $parameters]]);
+    }
+
 }

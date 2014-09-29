@@ -98,22 +98,46 @@ Route::group(array('before' => 'auth', 'namespace' => 'App\Controllers\User'), f
     Route::post('user/password/submit', 'UsersController@postPassword');
     Route::get('user/password', array('as' => 'password', 'uses' => 'UsersController@getPassword'));
 
-    #Create new post listing (Detail and description)
+
+    #LISTINGS
+    Route::get('listing/manage', 'PostsController@index');
+
+    ##Create new post listing (Detail and description)
     Route::get('listing/create', 'PostsController@getCreate');
 
-    #Submit new post listing
+    ##Submit new post listing
     Route::post("listing/submit", "PostsController@submitCreate");
-    #Update media of listing post
-    #Update post listing detail and description
-    Route::get('listing/{name}/edit', 'PostsController@getCreate');
 
-    #after create detail and description, popup modal to ask them to upload the image together with Generic Number
+    ##Update media of listing post
+    Route::get('listing/{code}/photo/edit', 'PostsController@getMediaEdit');
+    Route::post('listing/{code}/photo/submit', 'PostsController@getMediaEdit');
+
+    ##Update post listing detail and description
+    Route::get('listing/{code}/edit', 'PostsController@getEdit');
+    Route::post('listing/{code}/submit', 'PostsController@submitEdit');
+
+    ##after create detail and description, popup modal to ask them to upload the image together with Generic Number
     Route::get('listing/{code}/photo', 'PostsController@getMedia');
     Route::post('listing/photo/submit', 'PostsController@submitMedia');
 });
 
 
 Route::group(array('prefix' => 'api/v1', 'namespace' => 'App\Controllers\Api'), function() {
-    Route::resource('todos', 'TodosController');
-    Route::resource('auth', 'AuthController', array('only' => array('index')));
+
+
+
+    /*
+     * /user - show all user
+     * /user/{user_id} - show info of user
+     * /user/{user_id}/listings - show all listings from user (GET)
+     * /user/{user_id}/listings - submit new listing of user (POST)
+     * /user/{user_id}/listings/create - create new listing of user - FORM
+     * /user/{user_id}/listings/{slug} - show detail of listing of user
+     */
+    Route::resource('user', 'UserController', ['only' => ['show']]);
+    Route::resource('user.listings', 'UserPostsController');
+
+
+//    Route::resource('todos', 'TodosController');
+//    Route::resource('auth', 'AuthController', array('only' => array('index')));
 });
