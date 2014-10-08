@@ -72,16 +72,32 @@ Route::group(array('namespace' => 'App\Controllers'), function() {
      */
     Route::get('model/{id}/specs', 'FeaturesController@getSpecs');
 
-
     /**
      * List of all listings
-     * 
+     */
+    Route::get('model/{slug}/listings', 'FeaturesController@getListings');
+
+    /**
      * Detail of listing
      * Review of listing
      * 
      * PostController
      */
     Route::get('listing/{slug}/detail', 'PostsController@getDetail');
+
+    /**
+     * Get Search Listings
+     * 
+     * This is the function that will extract the queries and fetch it from database.
+     */
+    Route::get('listing/search', 'PostsController@getSearchListings');
+
+    /**
+     * Search Filter
+     * 
+     * This is where the search filter action uri will be pointed.
+     */
+    Route::post('search', 'HomeController@postSearch');
 });
 
 Route::group(array('before' => 'auth', 'namespace' => 'App\Controllers'), function() {
@@ -104,7 +120,7 @@ Route::group(array('before' => 'auth', 'namespace' => 'App\Controllers\User'), f
 
     #Update Password
     Route::get('user/password', 'UsersController@getPassword');
-    Route::post('user/password/submit', 'UsersController@postPassword');
+    Route::post('user/password/submit', 'UsersContproller@postPassword');
     Route::get('user/password', array('as' => 'password', 'uses' => 'UsersController@getPassword'));
 
 

@@ -121,6 +121,17 @@ class PostsController extends BaseController
         return Response::json($response);
     }
 
+    public function getSearchListings()
+    {
+        $criteria = \Input::all();
+
+        //OK WE RECEIEVE THE QUERIES
+
+
+
+        return \Response::json(['input' => $criteria]);
+    }
+
 }
 
 /* End of file PostController.php */

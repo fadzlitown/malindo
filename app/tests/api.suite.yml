@@ -1,0 +1,8 @@
+class_name: ApiTester
+modules:
+    enabled: [Laravel4, REST, ApiHelper, Asserts, PhpBrowser]
+    config:
+        PhpBrowser:
+            url: http://malindo.dev:8000/
+        REST:
+            url: http://malindo.dev:8000/

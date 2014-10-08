@@ -20,6 +20,12 @@ class HomeController extends BaseController
 {
 
     protected $layout = 'frontend.layouts.basic';
+    protected $repository;
+
+    public function __construct(\App\Malindo\Repositories\HomeRepository $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
      * Display home view.
@@ -104,7 +110,7 @@ class HomeController extends BaseController
         if ($validator->passes()) {
             $account_id = Account::where("email", $input['email'])->get(array('id'))->first();
             $queries    = \DB::getQueryLog();
-          
+
             if (isset($account_id)) {
                 if (Auth::attempt(array('email' => $input['email'], 'password' => $input['password']), ($input['remember']))) {
                     return Redirect::to('dashboard');
@@ -272,6 +278,32 @@ class HomeController extends BaseController
 
         $token = Input::get('token');
         return Redirect::to('reset/' . $token)->withInput()->withErrors($validator);
+    }
+
+    public function postSearch()
+    {
+        $input = [
+            'keyword'           => \Input::get("keyword"),
+            'category'          => \Input::get("category"),
+            'brand'             => \Input::get("brand"),
+            'model'             => \Input::get("model"),
+            'order_by'          => \Input::get("order_by"),
+            'order_type'        => \Input::get("order_type"), //ASC or DESC
+            'price_range_start' => \Input::get("price_range_start"),
+            'price_range_end'   => \Input::get("price_range_end"),
+            'specs'             => \Input::get("specs")
+        ];
+
+        $trim_input = $this->repository->trimData($input);
+
+        $category_slug = (isset($trim_input['category'])) ? $trim_input['category'] : null;
+        $brand_slug    = (isset($trim_input['brand'])) ? $trim_input['brand'] : '';
+        $model_slug    = (isset($trim_input['model'])) ? $trim_input['model'] : '';
+
+        $redirect_uri = $this->repository->buildRedirectUri($category_slug, $brand_slug, $model_slug, $trim_input);
+
+        return \Response::json(['redirect_uri' => $redirect_uri], 200);
+//        return \Redirect::to($redirect_uri, 302);
     }
 
 }
