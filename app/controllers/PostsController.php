@@ -2,15 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Models\Account,
+use App\Malindo\Repositories\PostCommentRepository,
+    App\Models\Account,
     App\Models\Post,
+    App\Models\PostComment,
+    Auth,
     BaseController,
-    Carbon\Carbon,
     DB,
     Input,
     Redirect,
     Response,
-    Str,
     URL,
     Validator;
 
@@ -24,9 +25,12 @@ use App\Models\Account,
 class PostsController extends BaseController
 {
 
-    function __construct()
+    private $repository;
+
+    function __construct(PostCommentRepository $repository)
     {
         parent::__construct();
+        $this->repository = $repository;
     }
 
     public function getDetail($slug = null)
@@ -67,6 +71,56 @@ class PostsController extends BaseController
         echo '</pre>';
         die;
     }
+
+    public function postComment($slug)
+    {
+        if (!is_null($slug)) {
+            $post = Post::where('slug', $slug)->first();
+
+            if ($post) {
+                $postComment         = new PostComment();
+                $input               = Input::all();
+                $input['post_id']    = $post->id;
+                $input['account_id'] = Auth::user()->id;
+                $input['status']     = "approved";
+
+                $validator = Validator::make($input, $postComment->rules);
+
+                if ($validator->passes()) {
+                    $postComment = $this->repository->newInstance($input);
+                    $postComment->save();
+
+                    return Response::json([
+                                'error' => false,
+                                'data'  => [
+                                    'account'     => Account::find(\Auth::user()->id)->first(['first_name', 'last_name']),
+                                    'postComment' => $postComment->toArray()
+                                ]
+                    ]);
+                }
+
+                $response = [
+                    'error'   => true,
+                    'message' => $validator->messages()->first()
+                ];
+            }
+            else
+                $response = [
+                    'error'   => true,
+                    'message' => 'Unknown listing'
+                ];
+        }
+        else
+            $response = [
+                'error'   => true,
+                'message' => 'Parameter slug required'
+            ];
+
+
+
+        return Response::json($response);
+    }
+
 }
 
 /* End of file PostController.php */

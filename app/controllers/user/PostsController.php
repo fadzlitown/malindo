@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace App\Controllers\User;
 
@@ -43,7 +43,7 @@ class PostsController extends UserBaseController
         return Response::json($input);
     }
 
-    public function submitCreate()
+    public function postCreate()
     {
         $post     = new Post();
         $input    = Input::only($post->getFillable());
@@ -67,7 +67,7 @@ class PostsController extends UserBaseController
     public function getMedia($code)
     {
         $images = [];
-        $post   = Post::where('code', $code)->first();
+        $post   = Post::where('code', $code)->where('account_id', \Auth::user()->id)->first();
 
         if (!is_null($post)) {
             //populate existing media
@@ -83,7 +83,7 @@ class PostsController extends UserBaseController
         Return Response::view('frontend.posts.media', $output);
     }
 
-    public function submitMedia()
+    public function postMedia()
     {
         $images    = Input::file("images");
         $input     = array_add(Input::only("post_id"), 'allowed_images', count($images));
@@ -101,7 +101,6 @@ class PostsController extends UserBaseController
                     $filename        = Str::slug("{$post->slug}-{$id}");
                     $extension       = $file->getClientOriginalExtension();
                     $upload_success  = $file->move($destinationPath, $filename . '.' . $extension);
-                    var_dump($upload_success);
                 }
                 else {
                     echo $validator->messages()->first();
@@ -125,7 +124,7 @@ class PostsController extends UserBaseController
         }
     }
 
-    public function submitEdit($code)
+    public function postEdit($code)
     {
         $post = $this->repository->isPostExistsByCodeOfUser($code);
         echo '<pre>';
@@ -149,6 +148,52 @@ class PostsController extends UserBaseController
                 $post = $this->repository->setPostAsPending($post);
             }
         }
+    }
+
+    public function getBump($code)
+    {
+        $validator = \Validator::make(['code' => $code], ['code' => 'required|exists:posts,code']);
+        if ($validator->passes()) {
+
+            $post  = Post::where('code', $code)->where('account_id', \Auth::user()->id)->first();
+            $today = new Carbon('today');
+            if ($post) {
+
+                $output = [
+                    'post'     => $post,
+                    'dt_range' => [
+                        'start' => $today,
+                        'end'   => $today->addDays(31)
+                    ]
+                ];
+
+                return Response::view('', $output);
+            }
+            else
+                return Redirect::back()->with('flash_message', 'Data not found');
+        }
+        else
+            return \Redirect::back()->withInput()->withErrors($validator);
+    }
+
+    public function postBump($code)
+    {
+        $dt_start  = new Carbon('yesterday');
+        $validator = \Validator::make(['code' => $code, 'post_expiry_time' => \Input::get('post_expiry_time')], ['code' => 'required|exists:posts,code', 'post_expiry_time' => 'required|after:' . $dt_start->toDateString() . '|before:' . $dt_start->addDays(31)->toDateString()]);
+        if ($validator->passes()) {
+
+            $post = Post::where('code', $code)->where('account_id', \Auth::user()->id)->first();
+            if ($post) {
+                $post->post_expiry_timestamp = strtotime(\Input::get('post_expiry_time'));
+                $post->update();
+
+                return Redirect::back()->with('flash_message', 'Post has succesfully bumped');
+            }
+            else
+                return Redirect::back()->with('flash_error', 'Data not found');
+        }
+        else
+            return \Redirect::back()->withInput()->withErrors($validator);
     }
 
 }
